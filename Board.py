@@ -61,16 +61,16 @@ class Board:
     def click_event(self, pos):
         case = [pos[0 - 1] // Chess.CUBE_SIZE, pos[1 - 1] // Chess.CUBE_SIZE]
 
+        print(self.board[case[0]][case[1]])
         if self.board[case[0]][case[1]]:  # check if it's not empty
             self.selected = case
             self.draw_actual_board()
         else:
             if self.selected:
                 # Todo à fix
-                self.board[[case[0] - 1][case[1] - 1]] = self.board[[self.selected[0] - 1][self.selected[1] - 1]]
-                self.board[[self.selected[0] - 1][self.selected[1] - 1]] = ""
-            else:
-                self.selected = ""
-                self.draw_actual_board()
+                self.board[case[0]][case[1]] = self.board[self.selected[0]][self.selected[1]]
+                self.board[self.selected[0]][self.selected[1]] = ""
+            self.selected = ""
+            self.draw_actual_board()
 
         print(case[0], case[1])
