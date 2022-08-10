@@ -1,9 +1,7 @@
 import sys
-
-import pygame
 import time
 
-from pygame.rect import Rect
+import pygame
 
 from Board import Board
 
@@ -14,14 +12,14 @@ pygame.init()
 # ballrect = ball.get_rect().y =
 # kingrect = king.get_rect().
 
-Board(pygame).draw_actual_board()
+board = Board(pygame).draw_actual_board()
 
 while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         if event.type == pygame.MOUSEBUTTONUP:
-            Board.click_event(Board, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+            board.click_event(pygame.mouse.get_pos())
 
     time.sleep(0.01)
 

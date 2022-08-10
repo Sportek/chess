@@ -56,8 +56,8 @@ class Board:
             b = b + 1
 
     # TODO à fix
-    def click_event(self, x, y):
-        case = [x // Chess.CUBE_SIZE, y // Chess.CUBE_SIZE]
+    def click_event(self, pos):
+        case = [pos[0] // Chess.CUBE_SIZE, pos[1] // Chess.CUBE_SIZE]
         self.selected = case
         self.draw_actual_board()
         print(case[0], case[1])
