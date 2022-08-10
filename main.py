@@ -12,7 +12,8 @@ pygame.init()
 # ballrect = ball.get_rect().y =
 # kingrect = king.get_rect().
 
-board = Board(pygame).draw_actual_board()
+board = Board(pygame)
+board.draw_actual_board()
 
 while 1:
     for event in pygame.event.get():

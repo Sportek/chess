@@ -43,12 +43,14 @@ class Board:
                     color = Chess.WHITE_COLOR
                 else:
                     color = Chess.BLACK_COLOR
-                self.pygame.draw.rect(screen, color, Rect(x * Chess.CUBE_SIZE, y * Chess.CUBE_SIZE, Chess.CUBE_SIZE, Chess.CUBE_SIZE))
+                self.pygame.draw.rect(screen, color,
+                                      Rect(x * Chess.CUBE_SIZE, y * Chess.CUBE_SIZE, Chess.CUBE_SIZE, Chess.CUBE_SIZE))
 
                 if self.board[y][x]:
                     piece = self.pygame.image.load(f"images/{self.board[y][x]}.png")
                     piece = pygame.transform.scale(piece, Chess.DEFAULT_IMAGE_SIZE)
-                    piece_rect = Rect(x * Chess.CUBE_SIZE, y * Chess.CUBE_SIZE, piece.get_rect().width, piece.get_rect().height)
+                    piece_rect = Rect(x * Chess.CUBE_SIZE, y * Chess.CUBE_SIZE, piece.get_rect().width,
+                                      piece.get_rect().height)
                     screen.blit(piece, piece_rect)
 
                 a = a + 1
@@ -57,8 +59,9 @@ class Board:
 
     # TODO à fix
     def click_event(self, pos):
-        case = [pos[0] // Chess.CUBE_SIZE, pos[1] // Chess.CUBE_SIZE]
-        self.selected = case
-        self.draw_actual_board()
-        print(case[0], case[1])
+        case = [pos[0 - 1] // Chess.CUBE_SIZE, pos[1 - 1] // Chess.CUBE_SIZE]
 
+        if self.board[case[0]][case[1]]:
+            self.selected = case
+            self.draw_actual_board()
+        print(case[0], case[1])
