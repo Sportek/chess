@@ -57,6 +57,7 @@ class Board:
 
                 if self.possible_moves:
                     for i in self.possible_moves:
+                        print("number: ", i)
                         possible_move = self.pygame.draw.rect(screen, "BLUE",
                                                               Rect(i[0] * Chess.CUBE_SIZE, i[1] * Chess.CUBE_SIZE,
                                                                    Chess.CUBE_SIZE, Chess.CUBE_SIZE))
@@ -68,14 +69,15 @@ class Board:
     def click_event(self, pos):
         case = [pos[0 - 1] // Chess.CUBE_SIZE, pos[1 - 1] // Chess.CUBE_SIZE]
 
-        print(self.board[case[0]][case[1]])
-        if self.board[case[0]][case[1]]:  # check if it's not empty
+        piece_name = self.board[case[0]][case[1]]
+
+        if piece_name:  # check if it's not empty
             self.selected = case
-            self.possible_moves = Pieces(case, pos, self.board)
+            self.possible_moves = Pieces(piece_name, pos, self.board).get_possible_movement()
             self.draw_actual_board()
         else:
             if self.selected:
-                self.board[case[0]][case[1]] = self.board[self.selected[0]][self.selected[1]]
+                piece_name = self.board[self.selected[0]][self.selected[1]]
                 self.board[self.selected[0]][self.selected[1]] = ""
             self.selected = ""
             self.possible_moves = []
