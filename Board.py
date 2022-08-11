@@ -2,6 +2,7 @@ import pygame.transform
 from pygame.rect import Rect
 
 import Chess
+from pieces.Pieces import Pieces
 
 
 class Board:
@@ -22,6 +23,7 @@ class Board:
              "white_rook"]
         ]
         self.selected = [None, None]
+        self.possible_moves = []
 
     def draw_actual_board(self):
 
@@ -53,24 +55,30 @@ class Board:
                                       piece.get_rect().height)
                     screen.blit(piece, piece_rect)
 
+                if self.possible_moves:
+                    for i in self.possible_moves:
+                        possible_move = self.pygame.draw.rect(screen, "BLUE",
+                                                              Rect(i[0] * Chess.CUBE_SIZE, i[1] * Chess.CUBE_SIZE,
+                                                                   Chess.CUBE_SIZE, Chess.CUBE_SIZE))
+
                 a = a + 1
             a = 0
             b = b + 1
 
-    # TODO à fix
     def click_event(self, pos):
         case = [pos[0 - 1] // Chess.CUBE_SIZE, pos[1 - 1] // Chess.CUBE_SIZE]
 
         print(self.board[case[0]][case[1]])
         if self.board[case[0]][case[1]]:  # check if it's not empty
             self.selected = case
+            self.possible_moves = Pieces(case, pos, self.board)
             self.draw_actual_board()
         else:
             if self.selected:
-                # Todo à fix
                 self.board[case[0]][case[1]] = self.board[self.selected[0]][self.selected[1]]
                 self.board[self.selected[0]][self.selected[1]] = ""
             self.selected = ""
+            self.possible_moves = []
             self.draw_actual_board()
 
         print(case[0], case[1])
