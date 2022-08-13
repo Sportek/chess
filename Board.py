@@ -67,10 +67,7 @@ class Board:
 
     def click_event(self, pos):
         case = convert_coordinates_to_cases(pos)
-        # print("Selected case:", case)
         piece_name = self.board[case[0]][case[1]]
-
-        # print("Piece name:", piece_name)
 
         if piece_name:  # Do actions if user select a piece
             self.selected = case
