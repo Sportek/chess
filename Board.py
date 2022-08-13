@@ -73,15 +73,21 @@ class Board:
         piece_name = self.board[case[0]][case[1]]
 
         if piece_name:  # Do actions if user select a piece
-            self.selected = case
-            self.possible_moves = Pieces(piece_name, convert_coordinates_to_cases(pos),
-                                         self.board).get_possible_movement()
-            self.draw_actual_board()
-        else:
-            if self.selected:
-                if case in self.possible_moves:
-                    self.move_piece_to_location(self.selected, case)
+            if self.selected != [] and (
+                    case in self.possible_moves):  # If there was something selected and in the possible locations
+                self.move_piece_to_location(self.selected, case)
                 self.selected = []
                 self.possible_moves = []
+            else:  # To change the selected case
+                self.selected = case
+                self.possible_moves = Pieces(piece_name, convert_coordinates_to_cases(pos),
+                                             self.board).get_possible_movement()
 
-            self.draw_actual_board()
+        else:  # Do actions if user select nothing
+            if self.selected:  # If there was something selected
+                if case in self.possible_moves:  # Move piece if user click in a possible locations
+                    self.move_piece_to_location(self.selected, case)
+                #  Reset movements
+                self.selected = []
+                self.possible_moves = []
+        self.draw_actual_board()

@@ -27,9 +27,9 @@ class Pieces:
                 for i in vals:
                     case = [self.pos[0] + i[0], self.pos[1] + i[1]] if self.get_team() == "white" else [
                         self.pos[0] - i[0], self.pos[1] - i[1]]
-                    if self.board[case[0]][case[1]].split("_")[0] != self.get_team() and \
-                            self.board[case[0]][case[1]].split("_")[0] != "":
-                        possible_positions.append(case)
+                    if (8 > case[0] >= 0) and (8 > case[1] >= 0):
+                        if self.board[case[0]][case[1]].split("_")[0] != self.get_team() and self.board[case[0]][case[1]].split("_")[0] != "":
+                            possible_positions.append(case)
 
             case "rook":
                 for z in range(2):
