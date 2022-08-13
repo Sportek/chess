@@ -7,11 +7,8 @@ from Board import Board
 
 pygame.init()
 
-# ball = pygame.image.load("intro_ball.gif")
-# king = pygame.image.load("images/king.png")
-# ballrect = ball.get_rect().y =
-# kingrect = king.get_rect().
-
+pygame.display.set_caption("Chess ⁕ by Sportek")
+pygame.display.set_icon(pygame.image.load("images/black_king.png"))
 board = Board(pygame)
 board.draw_actual_board()
 
@@ -21,7 +18,5 @@ while 1:
             sys.exit()
         if event.type == pygame.MOUSEBUTTONUP:
             board.click_event(pygame.mouse.get_pos())
-
     time.sleep(0.01)
-
     pygame.display.flip()
