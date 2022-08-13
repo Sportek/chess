@@ -24,6 +24,9 @@ class Board:
         ]
         self.selected = [None, None]
         self.possible_moves = []
+        self.king_has_move = False
+        self.black_rooks_has_move = [False, False]
+        self.white_rooks_has_move = [False, False]
 
     def move_piece_to_location(self, now_pos, then_pos):
         self.board[then_pos[0]][then_pos[1]] = self.board[now_pos[0]][now_pos[1]]
