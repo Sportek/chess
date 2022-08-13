@@ -21,19 +21,21 @@ class Pieces:
                 if self.pos[1] == 1 or self.pos[1] == 6:
                     possible_positions.append([self.pos[0], self.pos[1] + (2 if self.get_team() == "black" else -2)])
             case "rook":
-                print("===========================")
-                for i in range(2):
-                    val = True
-                    for y in range(-8, 8):
-                        second = self.pos[i] + y
+                for z in range(2):
+                    for y in range(8):
+                        second = self.pos[1] + (y if z else -y)
                         if (8 > second >= 0) and (y != 0):
-                            case = [self.pos[0], second] if i else [second, self.pos[1]]
-                            if val:
-                                possible_positions.append(case)
+                            case = [self.pos[0], second]
+                            possible_positions.append(case)
                             if self.board[case[0]][case[1]]:
-                                if y < 0:
-                                    val = True
-                                else:
-                                    break
+                                break
+                    for i in range(8):
+                        second = self.pos[0] + (y if z else -y)
+                        if (8 > second >= 0) and (i != 0):
+                            case = [second, self.pos[1]]
+                            possible_positions.append(case)
+                            if self.board[case[0]][case[1]]:
+                                break
+
                 print(possible_positions)
         return possible_positions
