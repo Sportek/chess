@@ -68,6 +68,12 @@ class Board:
             a = 0
             b = b + 1
 
+    def check_if_promotion(self, case):
+        piece = Pieces(self.board[case[0]][case[1]], case, self.board)
+        if piece.get_type() == "pawn":
+            if (piece.get_team() == "white" and case[1] == 0) or (piece.get_team() == "black" and case[1] == 7):
+                print("arrivé")
+
     def click_event(self, pos):
         case = convert_coordinates_to_cases(pos)
         piece_name = self.board[case[0]][case[1]]
@@ -75,7 +81,8 @@ class Board:
         if piece_name:  # Do actions if user select a piece
             if self.selected != [] and (
                     case in self.possible_moves):  # If there was something selected and in the possible locations
-                self.move_piece_to_location(self.selected, case)
+                self.move_piece_to_location(self.selected, case)  # Eat
+                self.check_if_promotion(case)
                 self.selected = []
                 self.possible_moves = []
             else:  # To change the selected case
@@ -87,6 +94,7 @@ class Board:
             if self.selected:  # If there was something selected
                 if case in self.possible_moves:  # Move piece if user click in a possible locations
                     self.move_piece_to_location(self.selected, case)
+                    self.check_if_promotion(case)
                 #  Reset movements
                 self.selected = []
                 self.possible_moves = []

@@ -17,16 +17,14 @@ class Pieces:
                 case = [self.pos[0], self.pos[1] + (1 if self.get_team() == "black" else -1)]
                 if self.board[case[0]][case[1]].split("_")[0] == "":
                     possible_positions.append(case)
-                if (self.pos[1] == 1 and self.get_team() == "black") or (
-                        self.pos[1] == 6 and self.get_team() == "white"):
+                if (self.pos[1] == 1 and self.get_team() == "black") or (self.pos[1] == 6 and self.get_team() == "white"):
                     case = [self.pos[0], self.pos[1] + (2 if self.get_team() == "black" else -2)]
                     if self.board[case[0]][case[1]].split("_")[0] == "":
                         possible_positions.append(case)
                 vals = [[-1, -1], [1, -1], [1, 1], [-1, 1]]
 
                 for i in vals:
-                    case = [self.pos[0] + i[0], self.pos[1] + i[1]] if self.get_team() == "white" else [
-                        self.pos[0] - i[0], self.pos[1] - i[1]]
+                    case = [self.pos[0] + i[0], self.pos[1] + i[1]] if self.get_team() == "white" else [self.pos[0] - i[0], self.pos[1] - i[1]]
                     if (8 > case[0] >= 0) and (8 > case[1] >= 0):
                         if self.board[case[0]][case[1]].split("_")[0] != self.get_team() and self.board[case[0]][case[1]].split("_")[0] != "":
                             possible_positions.append(case)
