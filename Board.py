@@ -11,6 +11,7 @@ def convert_coordinates_to_cases(pos):
 
 class Board:
     def __init__(self, pygame):
+        self.screen = None
         self.pygame = pygame
         self.board = [
             ["black_rook", "black_pawn", "", "", "", "", "white_pawn", "white_rook"],
@@ -27,15 +28,38 @@ class Board:
         self.king_has_move = False
         self.black_rooks_has_move = [False, False]
         self.white_rooks_has_move = [False, False]
+        self.promotion_screen = False
+        self.promotion_choices = {}
+        self.promotion_coordinates = None
+        self.promotion_team = None
+        self.turn = "white"
+
+    def show_selector(self):
+        cube = 75
+        self.pygame.draw.rect(self.screen, (100, 100, 100), Rect(0, (8 * Chess.CUBE_SIZE + 10 + 10 + cube) / 3 - 34, Chess.CUBE_SIZE * 8, 140))
+
+        self.promotion_choices = {
+            "queen": Rect(10 + cube * 0, (8 * Chess.CUBE_SIZE + 10 + 10 + cube) / 3, cube, cube).move(24 + 0 * 10, 0),
+            "bishop": Rect(10 + cube * 1, (8 * Chess.CUBE_SIZE + 10 + 10 + cube) / 3, cube, cube).move(24 + 1 * 10, 0),
+            "rook": Rect(10 + cube * 2, (8 * Chess.CUBE_SIZE + 10 + 10 + cube) / 3, cube, cube).move(24 + 2 * 10, 0),
+            "knight": Rect(10 + cube * 3, (8 * Chess.CUBE_SIZE + 10 + 10 + cube) / 3, cube, cube).move(24 + 3 * 10, 0)}
+
+        for key, value in self.promotion_choices.items():
+            self.pygame.draw.rect(self.screen, (75, 75, 75), value)
+            image = self.pygame.image.load("images/" + self.promotion_team + "_" + key + ".png")
+            image = pygame.transform.scale(image, (cube, cube))
+            self.screen.blit(image, value)
 
     def move_piece_to_location(self, now_pos, then_pos):
         self.board[then_pos[0]][then_pos[1]] = self.board[now_pos[0]][now_pos[1]]
         self.board[now_pos[0]][now_pos[1]] = ""
+        self.turn = "black" if self.turn == "white" else "white"
 
     def draw_actual_board(self):
+        pygame.display.set_caption(f"Chess ⁕ by Sportek | Turn to {self.turn}")
 
         size = width, height = Chess.CUBE_SIZE * 8, Chess.CUBE_SIZE * 8
-        screen = self.pygame.display.set_mode(size)
+        self.screen = self.pygame.display.set_mode(size)
 
         a = 0
         b = 0
@@ -54,7 +78,7 @@ class Board:
                     color = Chess.WHITE_COLOR
                 else:
                     color = Chess.BLACK_COLOR
-                self.pygame.draw.rect(screen, color,
+                self.pygame.draw.rect(self.screen, color,
                                       Rect(x * Chess.CUBE_SIZE, y * Chess.CUBE_SIZE, Chess.CUBE_SIZE, Chess.CUBE_SIZE))
 
                 if self.board[x][y]:
@@ -62,19 +86,40 @@ class Board:
                     piece = pygame.transform.scale(piece, Chess.DEFAULT_IMAGE_SIZE)
                     piece_rect = Rect(x * Chess.CUBE_SIZE, y * Chess.CUBE_SIZE, piece.get_rect().width,
                                       piece.get_rect().height)
-                    screen.blit(piece, piece_rect)
+                    self.screen.blit(piece, piece_rect)
 
                 a = a + 1
             a = 0
             b = b + 1
+            if self.promotion_screen:
+                self.show_selector()
 
     def check_if_promotion(self, case):
         piece = Pieces(self.board[case[0]][case[1]], case, self.board)
         if piece.get_type() == "pawn":
             if (piece.get_team() == "white" and case[1] == 0) or (piece.get_team() == "black" and case[1] == 7):
-                print("arrivé")
+                self.promotion_coordinates = case
+                self.promotion_team = piece.get_team()
+                self.promotion_screen = True
 
     def click_event(self, pos):
+        if not self.promotion_screen:
+            self.play_movement(pos)
+        else:
+            self.promotion_screen_click_event(pos)
+
+    def promotion_screen_click_event(self, pos):
+        val = ""
+        for key, value in self.promotion_choices.items():
+            if value.collidepoint(pos):
+                val = key
+                # break
+        if val != "":
+            self.board[self.promotion_coordinates[0]][self.promotion_coordinates[1]] = f"{self.promotion_team}_{val}"
+            self.promotion_screen = False
+            self.draw_actual_board()
+
+    def play_movement(self, pos):
         case = convert_coordinates_to_cases(pos)
         piece_name = self.board[case[0]][case[1]]
 
@@ -86,9 +131,10 @@ class Board:
                 self.selected = []
                 self.possible_moves = []
             else:  # To change the selected case
-                self.selected = case
-                self.possible_moves = Pieces(piece_name, convert_coordinates_to_cases(pos),
-                                             self.board).get_possible_movement()
+                if piece_name.split("_")[0] == self.turn:
+                    self.selected = case
+                    self.possible_moves = Pieces(piece_name, convert_coordinates_to_cases(pos),
+                                                 self.board).get_possible_movement()
 
         else:  # Do actions if user select nothing
             if self.selected:  # If there was something selected
