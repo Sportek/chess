@@ -2,5 +2,7 @@ from ChessPieces.CPieces import CPieces
 
 
 class Pawn(CPieces):
-    super.value = 50
-    super.name = "pawn"
+    def __init__(self, coordonates, team):
+        super().__init__(coordonates, team)
+        super.value = 1
+        super.name = "pawn"
