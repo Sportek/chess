@@ -10,6 +10,8 @@ pygame.init()
 pygame.display.set_caption("Chess ⁕ by Sportek")
 pygame.display.set_icon(pygame.image.load("images/black_king.png"))
 board = Board(pygame)
+board.replaceStringToObject()
+print(board.board)
 board.draw_actual_board()
 
 while 1:

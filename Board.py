@@ -2,7 +2,13 @@ import pygame.transform
 from pygame.rect import Rect
 
 import Chess
-from Pieces import Pieces
+from ChessPieces.Bishop import Bishop
+from ChessPieces.CPieces import CPieces
+from ChessPieces.King import King
+from ChessPieces.Knight import Knight
+from ChessPieces.Pawn import Pawn
+from ChessPieces.Queen import Queen
+from ChessPieces.Rook import Rook
 
 
 def convert_coordinates_to_cases(pos):
@@ -13,7 +19,7 @@ class Board:
     def __init__(self, pygame):
         self.screen = None
         self.pygame = pygame
-        self.board = [
+        self.board: list[list[CPieces]] | list[list[str]] = [
             ["black_rook", "black_pawn", "", "", "", "", "white_pawn", "white_rook"],
             ["black_knight", "black_pawn", "", "", "", "", "white_pawn", "white_knight"],
             ["black_bishop", "black_pawn", "", "", "", "", "white_pawn", "white_bishop"],
@@ -36,7 +42,8 @@ class Board:
 
     def show_selector(self):
         cube = 75
-        self.pygame.draw.rect(self.screen, (100, 100, 100), Rect(0, (8 * Chess.CUBE_SIZE + 10 + 10 + cube) / 3 - 34, Chess.CUBE_SIZE * 8, 140))
+        self.pygame.draw.rect(self.screen, (100, 100, 100),
+                              Rect(0, (8 * Chess.CUBE_SIZE + 10 + 10 + cube) / 3 - 34, Chess.CUBE_SIZE * 8, 140))
 
         self.promotion_choices = {
             "queen": Rect(10 + cube * 0, (8 * Chess.CUBE_SIZE + 10 + 10 + cube) / 3, cube, cube).move(24 + 0 * 10, 0),
@@ -52,6 +59,7 @@ class Board:
 
     def move_piece_to_location(self, now_pos, then_pos):
         self.board[then_pos[0]][then_pos[1]] = self.board[now_pos[0]][now_pos[1]]
+        self.board[then_pos[0]][then_pos[1]].setCoordonates(then_pos)
         self.board[now_pos[0]][now_pos[1]] = ""
         self.turn = "black" if self.turn == "white" else "white"
 
@@ -82,7 +90,7 @@ class Board:
                                       Rect(x * Chess.CUBE_SIZE, y * Chess.CUBE_SIZE, Chess.CUBE_SIZE, Chess.CUBE_SIZE))
 
                 if self.board[x][y]:
-                    piece = self.pygame.image.load(f"images/{self.board[x][y]}.png")
+                    piece = self.pygame.image.load(f"images/{self.board[x][y].getFullName()}.png")
                     piece = pygame.transform.scale(piece, Chess.DEFAULT_IMAGE_SIZE)
                     piece_rect = Rect(x * Chess.CUBE_SIZE, y * Chess.CUBE_SIZE, piece.get_rect().width,
                                       piece.get_rect().height)
@@ -94,12 +102,33 @@ class Board:
             if self.promotion_screen:
                 self.show_selector()
 
+    def replaceStringToObject(self):
+        for x in range(8):
+            for y in range(8):
+                piece = self.board[x][y]
+                if piece:
+                    team = piece.split("_")[0]
+                    piece_type = piece.split("_")[1]
+                    match piece_type:
+                        case "pawn":
+                            self.board[x][y] = Pawn([x, y], team)
+                        case "bishop":
+                            self.board[x][y] = Bishop([x, y], team)
+                        case "rook":
+                            self.board[x][y] = Rook([x, y], team)
+                        case "queen":
+                            self.board[x][y] = Queen([x, y], team)
+                        case "king":
+                            self.board[x][y] = King([x, y], team)
+                        case "knight":
+                            self.board[x][y] = Knight([x, y], team)
+
     def check_if_promotion(self, case):
-        piece = Pieces(self.board[case[0]][case[1]], case, self.board)
-        if piece.get_type() == "pawn":
-            if (piece.get_team() == "white" and case[1] == 0) or (piece.get_team() == "black" and case[1] == 7):
+        piece = self.board[case[0]][case[1]]
+        if piece.getTeam() == "pawn":
+            if (piece.getTeam() == "white" and case[1] == 0) or (piece.getTeam() == "black" and case[1] == 7):
                 self.promotion_coordinates = case
-                self.promotion_team = piece.get_team()
+                self.promotion_team = piece.getTeam()
                 self.promotion_screen = True
 
     def click_event(self, pos):
@@ -131,10 +160,9 @@ class Board:
                 self.selected = []
                 self.possible_moves = []
             else:  # To change the selected case
-                if piece_name.split("_")[0] == self.turn:
+                if piece_name.getTeam() == self.turn:
                     self.selected = case
-                    self.possible_moves = Pieces(piece_name, convert_coordinates_to_cases(pos),
-                                                 self.board).get_possible_movement()
+                    self.possible_moves = piece_name.getPossibleMovements(self.board)
 
         else:  # Do actions if user select nothing
             if self.selected:  # If there was something selected
