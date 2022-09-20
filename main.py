@@ -5,6 +5,8 @@ import pygame
 
 from Board import Board
 
+# Todo Ajouter un système de repérage lorsqu'une équipe gagne. (Afficher "Échec" et afficher "Échec et Mat")
+
 pygame.init()
 
 pygame.display.set_caption("Chess ⁕ by Sportek")
