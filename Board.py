@@ -68,9 +68,8 @@ class Board:
         robot = Robot(self.board, "black")
         movement = robot.choose_movement()
         print(movement)
-        self.click_event([movement[0][0] * Chess.CUBE_SIZE, movement[0][1] * Chess.CUBE_SIZE])
-        self.click_event([movement[1][0] * Chess.CUBE_SIZE, movement[1][1] * Chess.CUBE_SIZE])
-        print("test")
+        self.click_event([movement[0]['piece'][0] * Chess.CUBE_SIZE, movement[0]['piece'][1] * Chess.CUBE_SIZE])
+        self.click_event([movement[0]['place'][0] * Chess.CUBE_SIZE, movement[0]['place'][1] * Chess.CUBE_SIZE])
 
     def draw_actual_board(self):
         pygame.display.set_caption(f"Chess ⁕ by Sportek | Turn to {self.turn}")
