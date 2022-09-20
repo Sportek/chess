@@ -9,6 +9,9 @@ class CPieces:
     def setCoordonates(self, coordonates):
         self.coordonates = coordonates
 
+    def getTeam(self):
+        return self.team
+
     def getCoordonates(self):
         return self.coordonates
 
@@ -32,3 +35,6 @@ class CPieces:
 
     def setName(self, name):
         self.name = name
+
+    def getPossibleMovements(self, board):
+        pass
