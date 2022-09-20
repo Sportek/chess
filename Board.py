@@ -9,6 +9,7 @@ from ChessPieces.Knight import Knight
 from ChessPieces.Pawn import Pawn
 from ChessPieces.Queen import Queen
 from ChessPieces.Rook import Rook
+from Robot import Robot
 
 
 def convert_coordinates_to_cases(pos):
@@ -31,9 +32,6 @@ class Board:
         ]
         self.selected = [None, None]
         self.possible_moves = []
-        self.king_has_move = False
-        self.black_rooks_has_move = [False, False]
-        self.white_rooks_has_move = [False, False]
         self.promotion_screen = False
         self.promotion_choices = {}
         self.promotion_coordinates = None
@@ -60,13 +58,24 @@ class Board:
     def move_piece_to_location(self, now_pos, then_pos):
         self.board[then_pos[0]][then_pos[1]] = self.board[now_pos[0]][now_pos[1]]
         self.board[then_pos[0]][then_pos[1]].setCoordonates(then_pos)
+        self.board[then_pos[0]][then_pos[1]].setMoved(True)
         self.board[now_pos[0]][now_pos[1]] = ""
         self.turn = "black" if self.turn == "white" else "white"
+        if self.turn == "black":
+            self.make_robot_work()
+
+    def make_robot_work(self):
+        robot = Robot(self.board, "black")
+        movement = robot.choose_movement()
+        print(movement)
+        self.click_event([movement[0][0] * Chess.CUBE_SIZE, movement[0][1] * Chess.CUBE_SIZE])
+        self.click_event([movement[1][0] * Chess.CUBE_SIZE, movement[1][1] * Chess.CUBE_SIZE])
+        print("test")
 
     def draw_actual_board(self):
         pygame.display.set_caption(f"Chess ⁕ by Sportek | Turn to {self.turn}")
 
-        size = width, height = Chess.CUBE_SIZE * 8, Chess.CUBE_SIZE * 8
+        size = Chess.CUBE_SIZE * 8, Chess.CUBE_SIZE * 8
         self.screen = self.pygame.display.set_mode(size)
 
         a = 0

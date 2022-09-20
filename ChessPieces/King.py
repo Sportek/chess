@@ -13,6 +13,6 @@ class King(CPieces):
         for i in values:
             case = [self.coordonates[0] + i[0], self.coordonates[1] + i[1]]
             if (8 > case[0] >= 0) and (8 > case[1] >= 0):
-                if board[case[0]][case[1]] != "" or board[case[0]][case[1]].getTeam() != self.getTeam():
+                if board[case[0]][case[1]] == "" or board[case[0]][case[1]].getTeam() != self.getTeam():
                     possible_positions.append(case)
         return possible_positions
